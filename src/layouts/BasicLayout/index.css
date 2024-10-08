@@ -1,3 +1,7 @@
-.my-prefix-layout .my-prefix-layout-content {
+.my-prefix-layout .my-prefix-layout-content{
     padding-bottom: 66px !important;
+}
+
+.ant-layout {
+    height: 100vh;
 }

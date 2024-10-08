@@ -13,6 +13,9 @@ import Link from "next/link";
 import GlobalFooter from "@/components/GlobalFooter";
 import "./index.css";
 import { menus } from "../../../config/menu";
+import { useSelector } from "react-redux";
+import { RootState } from "@/stores";
+import getAccessibleMenus from "@/access/menuAccess";
 
 const ProLayout = dynamic(
   () => import("@ant-design/pro-components").then((mod) => mod.ProLayout),
@@ -55,6 +58,8 @@ interface Props {
 
 export default function BasicLayout({ children }: Props) {
   const pathname = usePathname();
+
+  const loginUser = useSelector((state: RootState) => state.loginUser);
   return (
     <div
       id="basicLayout"
@@ -108,9 +113,11 @@ export default function BasicLayout({ children }: Props) {
           collapsedShowGroupTitle: true,
         }}
         avatarProps={{
-          src: "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
+          src:
+            loginUser.userAvatar ||
+            "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
           size: "small",
-          title: "小吗喽",
+          title: loginUser.userName || "小吗喽",
           render: (props, dom) => {
             return (
               <Dropdown
@@ -144,7 +151,7 @@ export default function BasicLayout({ children }: Props) {
             </a>,
           ];
         }}
-        headerTitleRender={(logo, title, _) => {
+        headerTitleRender={(logo, title) => {
           return (
             <a>
               {logo}
@@ -158,7 +165,7 @@ export default function BasicLayout({ children }: Props) {
         }}
         onMenuHeaderClick={(e) => console.log(e)}
         menuDataRender={() => {
-          return menus;
+          return getAccessibleMenus(loginUser, menus);
         }}
         menuItemRender={(item, dom) => (
           <Link href={item.path || "/"} target={item.target}>
