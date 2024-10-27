@@ -4,6 +4,7 @@ import highlight from "@bytemd/plugin-highlight";
 import "bytemd/dist/index.css";
 import "highlight.js/styles/vs.css";
 import "./index.css";
+import "github-markdown-css/github-markdown-light.css";
 
 interface Props {
   value?: string;
@@ -24,7 +25,7 @@ const MdEditor = (props: Props) => {
   return (
     <div className="md-editor">
       <Editor
-        value={value}
+        value={value || ""}
         placeholder={placeholder}
         mode="split"
         plugins={plugins}

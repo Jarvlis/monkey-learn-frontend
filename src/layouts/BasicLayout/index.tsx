@@ -1,21 +1,21 @@
 "use client";
-import {
-  GithubFilled,
-  LogoutOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import { Dropdown, Input } from "antd";
+import { GithubFilled, LogoutOutlined } from "@ant-design/icons";
+import { Dropdown, message } from "antd";
 import React from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import GlobalFooter from "@/components/GlobalFooter";
 import "./index.css";
 import { menus } from "../../../config/menu";
-import { useSelector } from "react-redux";
-import { RootState } from "@/stores";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/stores";
 import getAccessibleMenus from "@/access/menuAccess";
+import { userLogoutUsingPost } from "@/api/userController";
+import { DEFAULT_USER } from "@/constants/user";
+import { setLoginUser } from "@/stores/loginUser";
+import SearchInput from "./components/searchInput";
 
 const ProLayout = dynamic(
   () => import("@ant-design/pro-components").then((mod) => mod.ProLayout),
@@ -24,41 +24,30 @@ const ProLayout = dynamic(
   },
 );
 
-const SearchInput = () => {
-  return (
-    <div
-      key="SearchOutlined"
-      aria-hidden
-      style={{
-        display: "flex",
-        alignItems: "center",
-        marginInlineEnd: 24,
-      }}
-      onMouseDown={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-    >
-      <Input
-        style={{
-          borderRadius: 4,
-          marginInlineEnd: 12,
-        }}
-        prefix={<SearchOutlined />}
-        placeholder="搜索题目"
-        variant="borderless"
-      />
-    </div>
-  );
-};
-
 interface Props {
   children: React.ReactNode;
 }
 
 export default function BasicLayout({ children }: Props) {
   const pathname = usePathname();
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
+  /**
+   * 用户注销
+   */
+  const userLogout = async () => {
+    try {
+      await userLogoutUsingPost();
+      message.success("已退出登录！");
+      // 保存用户登录态
+      dispatch(setLoginUser(DEFAULT_USER));
+      router.push("/user/login");
+    } catch (e) {
+      message.error("操作失败，" + e.message);
+    }
+  };
+  const isHideSearchInput = pathname.includes("/question");
   const loginUser = useSelector((state: RootState) => state.loginUser);
   return (
     <div
@@ -91,11 +80,11 @@ export default function BasicLayout({ children }: Props) {
             width: "331px",
           },
         ]}
-        title="大圣面试取经之路"
+        title="大圣面试"
         logo={
           <Image
             src="/assets/logo.png"
-            alt={"大圣面试取经之路"}
+            alt={"大圣面试"}
             height={32}
             width={32}
           ></Image>
@@ -119,6 +108,11 @@ export default function BasicLayout({ children }: Props) {
           size: "small",
           title: loginUser.userName || "小吗喽",
           render: (props, dom) => {
+            if (!loginUser.id) {
+              return (
+                <div onClick={() => router.push("/user/login")}>{dom}</div>
+              );
+            }
             return (
               <Dropdown
                 menu={{
@@ -129,6 +123,11 @@ export default function BasicLayout({ children }: Props) {
                       label: "退出登录",
                     },
                   ],
+                  onClick: async (e: { key: React.Key }) => {
+                    if (e.key === "logout") {
+                      userLogout();
+                    }
+                  },
                 }}
               >
                 {dom}
@@ -139,7 +138,7 @@ export default function BasicLayout({ children }: Props) {
         actionsRender={(props) => {
           if (props.isMobile) return [];
           return [
-            <SearchInput key="search" />,
+            isHideSearchInput ? null : <SearchInput key="search" />,
             <a
               href="https://github.com/Jarvlis/monkey-learn-frontend"
               target="_blank"

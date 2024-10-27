@@ -33,7 +33,6 @@ const InitLayout: React.FC<
       const res = await getLoginUserUsingGet();
       if (res.data) {
         dispatch(setLoginUser(res.data as API.LoginUserVO));
-      } else {
       }
     }
   }, []);

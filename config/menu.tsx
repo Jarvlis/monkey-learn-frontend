@@ -4,14 +4,18 @@ import ACCESS_ENUM from "@/access/accessEnum";
 
 export const menus = [
   { path: "/", name: "主页" },
-  { path: "/questions", name: "题目" },
   { path: "/banks", name: "题库" },
+  { path: "/questions", name: "题目" },
   {
     path: "/admin",
     name: "管理",
     access: ACCESS_ENUM.ADMIN,
     icon: <CrownOutlined></CrownOutlined>,
-    children: [{ path: "/admin/users", name: "用户管理" }],
+    children: [
+      { path: "/admin/user", name: "用户管理" },
+      { path: "/admin/bank", name: "题库管理" },
+      { path: "/admin/question", name: "题目管理" },
+    ],
   },
 ] as MenuDataItem[];
 
