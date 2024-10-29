@@ -1,5 +1,5 @@
 "use client";
-import { GithubFilled, LogoutOutlined } from "@ant-design/icons";
+import { GithubFilled, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { Dropdown, message } from "antd";
 import React from "react";
 import Image from "next/image";
@@ -122,10 +122,17 @@ export default function BasicLayout({ children }: Props) {
                       icon: <LogoutOutlined />,
                       label: "退出登录",
                     },
+                    {
+                      key: "userCenter",
+                      icon: <UserOutlined />,
+                      label: "个人中心",
+                    },
                   ],
                   onClick: async (e: { key: React.Key }) => {
                     if (e.key === "logout") {
                       userLogout();
+                    } else if (e.key === "userCenter") {
+                      router.push("/user/center");
                     }
                   },
                 }}

@@ -7,6 +7,12 @@ export const menus = [
   { path: "/banks", name: "题库" },
   { path: "/questions", name: "题目" },
   {
+    path: "/user/center",
+    name: "个人中心",
+    access: !ACCESS_ENUM.NOT_LOGIN,
+    hideInMenu: true,
+  },
+  {
     path: "/admin",
     name: "管理",
     access: ACCESS_ENUM.ADMIN,

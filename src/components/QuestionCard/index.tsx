@@ -4,6 +4,8 @@ import { Card } from "antd";
 import Title from "antd/es/typography/Title";
 import TagList from "@/components/TagList";
 import MdViewer from "@/components/MdViewer";
+import useAddUserSignInRecord from "@/hooks/useAddUserSignInRecord";
+import { sign } from "node:crypto";
 
 interface Props {
   question: API.QuestionVO;
@@ -16,6 +18,9 @@ interface Props {
  */
 const QuestionCard = (props: Props) => {
   const { question } = props;
+
+  // 执行签到
+  useAddUserSignInRecord();
 
   return (
     <div className="questionCard">

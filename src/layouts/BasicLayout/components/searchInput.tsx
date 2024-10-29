@@ -21,7 +21,7 @@ const SearchInput = () => {
         }}
         placeholder="搜索题目"
         variant="borderless"
-        onSearch={(value) => router.push(`/question?q=${value}`)}
+        onSearch={(value) => router.push(`/questions?q=${value}`)}
       />
     </div>
   );
